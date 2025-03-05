@@ -11,5 +11,5 @@ Key features include:
         User-specific dashboards and booking history
         Admin panel for event management
         Database integration using MongoDB
-        This project involves tasks such as version control with GitHub, backend and frontend development, full project integration, and testing, culminating in the deployment of the system.
+        This project involves tasks such as version control with GitHub, backend and frontend development, full project integration, and testing, culminating in the deployment of the system
 
