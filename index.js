@@ -12,60 +12,48 @@ mongoose.connect('mongodb://localhost:27017/prj')
         console.error('Error connecting to MongoDB:', err);
     });
 
-// Function to create a new user
-async function createUser() {
-    const newUser = new User({
-        name: 'John Doe',
-        email: 'john@example.com',
-        password: 'securepassword123',
-        role: 'Standard User',
-    });
 
-    try {
-        await newUser.save();
-        console.log('User saved successfully!');
-    } catch (err) {
-        console.error('Error saving user:', err);
-    }
-}
+const newUser = new User({
+    name: 'John Doe',
+    email: 'john.doe@example.com',
+    password: 'hashedPassword123', // Hash the password before saving
+    role: 'Standard User',
+  });
+  
+  newUser.save()
+    .then((user) => console.log('User created:', user))
+    .catch((err) => console.error('Error creating user:', err));
 
-// Function to create a new event
-async function createEvent() {
-    const newEvent = new Event({
-        title: 'Tech Conference 2023',
-        description: 'A conference about the latest in technology.',
-        date: new Date('2023-12-15T09:00:00Z'),
-        location: 'San Francisco, CA',
-        category: 'Conference',
-        ticketPrice: 100,
-        totalTickets: 500,
-        organizerId: 'organizer123',
-    });
 
-    try {
-        await newEvent.save();
-        console.log('Event saved successfully!');
-    } catch (err) {
-        console.error('Error saving event:', err);
-    }
-}
+const newEvent = new Event({
+  title: 'Tech Conference 2023',
+  description: 'A conference about the latest in technology.',
+  date: new Date('2023-12-15'),
+  location: 'San Francisco, CA',
+  category: 'Conference',
+  ticketPrice: 100,
+  totalTickets: 500,
+  remainingTickets: 500,
+  organizerId: '654321abcdef123456789012', // Replace with a valid User ID (Organizer)
+});
 
-// Function to create a new booking
-async function createBooking() {
-    const newBooking = new Booking({
-        userId: 'user123',
-        eventId: 'event456',
-        numberOfTickets: 2,
-        totalPrice: 200,
-    });
+newEvent.save()
+  .then((event) => console.log('Event created:', event))
+  .catch((err) => console.error('Error creating event:', err));
 
-    try {
-        await newBooking.save();
-        console.log('Booking saved successfully!');
-    } catch (err) {
-        console.error('Error saving booking:', err);
-    }
-}
+
+  const newBooking = new Booking({
+    userId: '123456abcdef123456789012', // Replace with a valid User ID
+    eventId: '654321abcdef123456789012', // Replace with a valid Event ID
+    numberOfTickets: 2,
+    totalPrice: 200,
+    status: 'Confirmed',
+  });
+  
+  newBooking.save()
+    .then((booking) => console.log('Booking created:', booking))
+    .catch((err) => console.error('Error creating booking:', err));
+
 
 // Function to find all users
 async function findAllUsers() {
@@ -96,13 +84,3 @@ async function findAllBookings() {
         console.error('Error finding bookings:', err);
     }
 }
-
-// Example usage
-(async () => {
-    await createUser(); 
-    await createEvent(); 
-    await createBooking(); 
-    await findAllUsers();
-    await findAllEvents();
-    await findAllBookings();
-})();
