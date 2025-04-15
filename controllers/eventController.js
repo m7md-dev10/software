@@ -140,7 +140,7 @@ const eventController = {
       }
 
       res.status(200).json({
-        message: 'Event ${status.toLowerCase()} successfully',
+        message: `Event ${status.toLowerCase()} successfully`,
         event: updatedEvent
       });
     } catch (error) {
