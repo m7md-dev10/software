@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
   },
   profilePicture: {
     type: String,
-    default: '', // Default to an empty string or a placeholder image URL
+    default: '',
   },
   password: {
     type: String,
@@ -27,7 +27,10 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  resetPasswordToken: String,
+  resetPasswordExpire: Date,
 });
+
 
 const User = mongoose.model('User', userSchema);
 

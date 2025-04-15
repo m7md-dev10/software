@@ -23,7 +23,7 @@ const eventSchema = new mongoose.Schema({
   },
   image: {
     type: String,
-    default: '', // Default to an empty string or a placeholder image URL
+    default: '',
   },
   ticketPrice: {
     type: Number,
@@ -36,6 +36,11 @@ const eventSchema = new mongoose.Schema({
   remainingTickets: {
     type: Number,
     required: true,
+  },
+  status: {
+    type: String,
+    enum: ['Approved', 'Pending', 'Declined'],
+    default: 'Pending',
   },
   organizerId: {
     type: mongoose.Schema.Types.ObjectId,
