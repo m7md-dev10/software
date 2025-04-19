@@ -11,7 +11,7 @@ const eventController = {
       res.status(500).json({ message: "Server error" });
     }
   },
-    // admin & organizer
+    //public
   getEvent: async (req, res) => {
     try {
       const event = await Event.findById(req.params.id)
@@ -28,6 +28,40 @@ const eventController = {
     } catch (error) {
       console.error("Get event error:", error);
       res.status(500).json({ message: "Server error" });
+    }
+  },
+  // admin
+   getAllEventsForAdmin: async (req, res) => {
+    try {
+      if (req.user.role !== 'System Admin') {
+        return res.status(403).json({
+          success: false,
+          message: "Only system admins can access all events"
+        });
+      }
+      const events = await Event.find()
+        .select('-__v')
+        .populate('organizerId', 'name email')
+        .sort({ createdAt: -1 });
+  
+      const categorized = {
+        approved: events.filter(e => e.status === 'Approved'),
+        pending: events.filter(e => e.status === 'Pending'),
+        declined: events.filter(e => e.status === 'Declined')
+      };
+  
+      res.status(200).json({
+        success: true,
+        count: events.length,
+        ...categorized
+      });
+  
+    } catch (error) {
+      console.error("Admin get events error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to fetch events"
+      });
     }
   },
      // organizer
@@ -54,40 +88,93 @@ const eventController = {
     }
   },
     // organizer & admin
-  updateEvent: async (req, res) => {
-    try {
-      const event = await Event.findById(req.params.id);
-      
-      if (!event) {
-        return res.status(404).json({ message: "Event not found" });
+    updateEvent: async (req, res) => {
+      try {
+        const event = await Event.findById(req.params.id);
+        
+        if (!event) {
+          return res.status(404).json({ 
+            success: false,
+            message: "Event not found" 
+          });
+        }
+    
+        // Authorization check
+        if (
+          req.user.role !== 'System Admin' && 
+          (req.user.role !== 'Organizer' || event.organizerId.toString() !== req.user.userId)
+        ) {
+          return res.status(403).json({ 
+            success: false,
+            message: "Unauthorized: Only event organizer or admin can update" 
+          });
+        }
+    
+        // Prepare updates with number validation
+        const updates = {
+          title: req.body.title,
+          description: req.body.description,
+          category: req.body.category,
+          image: req.body.image,
+          date: req.body.date,
+          location: req.body.location,
+          ticketPrice: req.body.ticketPrice
+        };
+    
+        // Handle ticket changes safely
+        if (req.body.totalTickets) {
+          const newTotal = Number(req.body.totalTickets);
+          const ticketsSold = event.totalTickets - event.remainingTickets;
+    
+          if (isNaN(newTotal) || newTotal <= 0) {
+            return res.status(400).json({
+              success: false,
+              message: "Total tickets must be a positive number"
+            });
+          }
+    
+          if (newTotal < ticketsSold) {
+            return res.status(400).json({
+              success: false,
+              message: `Cannot reduce tickets below ${ticketsSold} (already sold)`
+            });
+          }
+    
+          updates.totalTickets = newTotal;
+          updates.remainingTickets = newTotal - ticketsSold;
+        }
+    
+        const updatedEvent = await Event.findByIdAndUpdate(
+          req.params.id,
+          updates,
+          { 
+            new: true,
+            runValidators: true 
+          }
+        ).select('-__v');
+    
+        res.status(200).json({
+          success: true,
+          message: "Event updated successfully",
+          event: updatedEvent
+        });
+    
+      } catch (error) {
+        console.error("Update event error:", error);
+        
+        if (error.name === 'ValidationError') {
+          return res.status(400).json({
+            success: false,
+            message: Object.values(error.errors).map(e => e.message).join(', ')
+          });
+        }
+    
+        res.status(500).json({ 
+          success: false,
+          message: "Server error during update" 
+        });
       }
-
-      if (req.user.role !== 'System Admin' && req.user.role !== 'Organizer' || event.organizerId.toString() !== req.user.userId) {
-        return res.status(403).json({ message: "Unauthorized to edit this event" });
-      }
-
-      const updates = {
-        title: req.body.title,
-        description: req.body.description,
-        category: req.body.category,
-        image: req.body.image,
-        date: req.body.date,
-        location: req.body.location,
-        ticketPrice: req.body.ticketPrice,
-        totalTickets: req.body.totalTickets,
-        remainingTickets: req.body.totalTickets - (event.totalTickets - event.remainingTickets)
-      };
-
-      const updatedEvent = await Event.findByIdAndUpdate(req.params.id, updates, { new: true });
-      res.status(200).json({
-        message: "Event updated successfully",
-        event: updatedEvent
-      });
-    } catch (error) {
-      console.error("Update event error:", error);
-      res.status(500).json({ message: "Server error" });
-    }
-  },
+    },
     // organizer & admin
   deleteEvent: async (req, res) => {
     try {

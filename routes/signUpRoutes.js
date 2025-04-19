@@ -7,7 +7,7 @@ const authoMiddleware = require('../middleware/authoMiddleware');
  //public
  router.post('/register', userController.register);
  router.post('/login', userController.login);
- router.post('/forgetPassword', userController.forgotPassword);
+ router.put('/forgetPassword', userController.forgotPassword);
  router.post('/resetPassword/:token', userController.resetPassword);
 
  module.exports = router;
