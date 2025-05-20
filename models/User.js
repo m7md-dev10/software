@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 
 const userSchema = new mongoose.Schema({
+<<<<<<< Updated upstream
     name: {
         type: String,
         required: true, 
@@ -36,6 +37,38 @@ const userSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
     },
+=======
+  name: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  profilePicture: {
+    type: String,
+    default: '',
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  role: {
+    type: String,
+    enum: ['Standard User', 'Organizer', 'System Admin'],
+    default: 'Standard User',
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  resetPasswordToken: String,
+  resetPasswordExpire: Date,
+  verificationCode: String,
+  verificationCodeExpiry: Date,
+>>>>>>> Stashed changes
 });
 
 
