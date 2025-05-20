@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
 const userRoutes = require('./routes/userRoutes');
 const eventRoutes = require('./routes/eventRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
@@ -9,6 +10,15 @@ const signUpRoutes = require('./routes/signUpRoutes.js');
 
 // express connections
 const app = express();
+
+// CORS configuration
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -19,10 +29,10 @@ mongoose.connect(process.env.MONGODB_URI)
   .catch(err => console.error('MongoDB connection error:', err));
 
 // APIs connections
-app.use('/api/v1',signUpRoutes);
+app.use('/api/v1/auth', signUpRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/events', eventRoutes);
-app.use('/api/v1/bookings',bookingRoutes);
+app.use('/api/v1/bookings', bookingRoutes);
 
 // error handling
 app.use((err, req, res, next) => {
@@ -31,5 +41,5 @@ app.use((err, req, res, next) => {
 });
 
 // server connection
-const PORT = process.env.PORT || 5001; 
+const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

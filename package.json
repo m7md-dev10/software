@@ -20,15 +20,17 @@
   "homepage": "https://github.com/m7md-dev10/software#readme",
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "bcryptjs": "^3.0.2",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^4.21.2",
+    "express-session": "^1.18.1",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.13.2",
+    "mongoose": "^8.14.3",
     "nodemailer": "^6.10.1"
   },
   "devDependencies": {
-    "nodemon": "2.0.20"
+    "nodemon": "^3.1.10"
   }
 }

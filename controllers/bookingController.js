@@ -14,7 +14,7 @@ const bookingController = {
 
       if (event.remainingTickets < numberOfTickets) {
         return res.status(400).json({ 
-          message: `Only ${event.remainingTickets} tickets available` 
+          message: 'Only ${event.remainingTickets} tickets available' 
         });
       }
 

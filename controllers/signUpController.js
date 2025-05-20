@@ -2,6 +2,7 @@ const crypto = require('crypto');
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { sendPasswordResetEmail } = require('../utils/emailService');
 const secretKey = process.env.JWT_SECRET;
     
 const signUpController = {
@@ -101,23 +102,24 @@ login: async (req, res) => {
       
       await user.save();
 
-      console.log("Stored in DB:", { 
-        token: user.resetPasswordToken,
-        expires: new Date(user.resetPasswordExpire) 
-      });
+      // Create reset URL
+      const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
 
-      const resetUrl = `http://yourfrontend.com/resetPassword/${resetToken}`;
-
-      const message = `You requested a password reset. Click this link: \n\n${resetUrl}`;
-
-      console.log('Password reset email would be sent to:', email);
-      console.log('Reset URL:', resetUrl);
-
-      res.status(200).json({ 
-        success: true,
-        message: "Password reset email sent",
-        token: resetToken
-      });
+      // Send email
+      try {
+        await sendPasswordResetEmail(email, resetUrl);
+        res.status(200).json({ 
+          success: true,
+          message: "Password reset email sent"
+        });
+      } catch (emailError) {
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpire = undefined;
+        await user.save();
+        
+        console.error("Email send error:", emailError);
+        return res.status(500).json({ message: "Failed to send password reset email" });
+      }
 
     } catch (error) {
       console.error("Forgot password error:", error);
