@@ -515,4 +515,17 @@
   .form-row {
     grid-template-columns: 1fr;
   }
+}
+
+.event-category {
+  display: inline-block;
+  padding: 4px 8px;
+  background-color: #e74c3c;
+  color: white;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  margin: 8px 0;
+  text-transform: capitalize;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 } 

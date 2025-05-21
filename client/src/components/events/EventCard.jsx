@@ -43,6 +43,7 @@ const EventCard = ({ event }) => {
       </div>
       <div className="event-content">
         <h3 className="event-title">{event.title}</h3>
+        <p className="event-category">{event.category}</p>
         <div className="event-details">
           <p className="event-date">
             <i className="far fa-calendar"></i> {formatDate(event.date)}

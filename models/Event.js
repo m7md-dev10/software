@@ -27,7 +27,7 @@ const eventSchema = new mongoose.Schema({
     category: {
         type: String,
         required: true, 
-        enum: ['Concert', 'Conference', 'Workshop', 'Sports', 'Other'],
+        enum: ['Concert', 'Conference', 'Workshop', 'Sports', 'Music', 'Other'],
     },
     image: {
         type: String,
@@ -51,8 +51,14 @@ const eventSchema = new mongoose.Schema({
         min: 0,
     },
     organizerId: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
         required: true,
+    },
+    status: {
+        type: String,
+        enum: ['Pending', 'Approved', 'Declined'],
+        default: 'Pending'
     },
     createdAt: {
         type: Date,

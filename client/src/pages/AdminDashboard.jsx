@@ -102,6 +102,7 @@ const AdminDashboard = () => {
                 <h3>{event.title}</h3>
                 <p>Date: {event.date ? new Date(event.date).toLocaleString() : 'N/A'}</p>
                 <p>Location: {event.location}</p>
+                <p>Category: {event.category}</p>
                 <p>Organizer: {event.organizerId?.name || 'N/A'} ({event.organizerId?.email || ''})</p>
                 <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
                   <button
@@ -129,6 +130,7 @@ const AdminDashboard = () => {
                 <h3>{event.title}</h3>
                 <p>Date: {event.date ? new Date(event.date).toLocaleString() : 'N/A'}</p>
                 <p>Location: {event.location}</p>
+                <p>Category: {event.category}</p>
                 <p>Organizer: {event.organizerId?.name || 'N/A'} ({event.organizerId?.email || ''})</p>
                 <span className="event-status" style={{ background: '#2ecc71' }}>Approved</span>
               </div>
@@ -141,6 +143,7 @@ const AdminDashboard = () => {
                 <h3>{event.title}</h3>
                 <p>Date: {event.date ? new Date(event.date).toLocaleString() : 'N/A'}</p>
                 <p>Location: {event.location}</p>
+                <p>Category: {event.category}</p>
                 <p>Organizer: {event.organizerId?.name || 'N/A'} ({event.organizerId?.email || ''})</p>
                 <span className="event-status" style={{ background: '#e74c3c' }}>Declined</span>
               </div>

@@ -18,7 +18,7 @@ const EventList = () => {
     try {
       setLoading(true);
       const response = await api.get('/events');
-      setEvents(response.data);
+      setEvents(response.data.events || response.data);
       setError(null);
     } catch (err) {
       setError('Failed to load events. Please try again later.');
@@ -101,7 +101,7 @@ const EventList = () => {
 
       {filteredAndSortedEvents.length === 0 ? (
         <div className="no-events">
-          <p>No events found matching your search.</p>
+          <p>No events available yet. Check back later!</p>
         </div>
       ) : (
         <div className="events-grid">
