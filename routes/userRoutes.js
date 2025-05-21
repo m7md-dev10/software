@@ -14,6 +14,7 @@ router.get('/bookings', authMiddleware,authoMiddleware(['Standard User']), userC
  //organizer
 router.get('/events',authMiddleware,authoMiddleware(['Organizer']),userController.getOrganizerEvents);
 router.get('/events/analytics',authMiddleware,authoMiddleware(['Organizer']),userController.getOrganizerAnalytics);
+router.get('/events/:id', authMiddleware, authoMiddleware(['Organizer']), userController.getOrganizerEventById);
 
  //admin
 router.get('/', authMiddleware,authoMiddleware(['System Admin']), userController.getAllUsers);

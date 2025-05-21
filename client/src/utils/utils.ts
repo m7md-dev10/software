@@ -1,4 +1,4 @@
-import { format, formatDistanceStrict } from 'date-fns';
+import { format, formatDistance } from 'date-fns';
 
 const formatDistanceLocale = {
   lessThanXSeconds: '{{count}}s',
@@ -40,7 +40,7 @@ export const formatDateTime = (date: string | Date) => {
 };
 
 export const formatRelativeTime = (date: string | Date) => {
-  return formatDistanceStrict(new Date(date), new Date(), {
+  return formatDistance(new Date(date), new Date(), {
     addSuffix: true,
     locale: {
       formatDistance: formatDistanceCustom,

@@ -171,22 +171,27 @@ updateUserRole: async (req, res) => {
 
       const analytics = await Promise.all(
         events.map(async event => {
-          const confirmedBookings = await Booking.countDocuments({
+          // Get all confirmed bookings for this event
+          const confirmedBookings = await Booking.find({
             eventId: event._id,
             status: 'Confirmed'
           });
+
+          // Calculate total tickets sold by summing numberOfTickets from each booking
+          const ticketsSold = confirmedBookings.reduce((total, booking) => total + booking.numberOfTickets, 0);
   
           const percentageBooked = Math.round(
-            (confirmedBookings / event.totalTickets) * 100
+            (ticketsSold / event.totalTickets) * 100
           );
   
           return {
             eventId: event._id,
             title: event.title,
             totalTickets: event.totalTickets,
-            ticketsSold: confirmedBookings,
+            ticketsSold,
+            remainingTickets: event.totalTickets - ticketsSold,
             percentageBooked,
-            revenue: confirmedBookings * event.ticketPrice
+            revenue: ticketsSold * event.ticketPrice
           };
         })
       );
@@ -300,6 +305,20 @@ updateUserRole: async (req, res) => {
       success: false,
       message: "Failed to update profile"
     });
+  }
+},
+getOrganizerEventById: async (req, res) => {
+  try {
+    if (req.user.role !== 'Organizer') {
+      return res.status(403).json({ message: "Only organizers can access this" });
+    }
+    const event = await Event.findOne({ _id: req.params.id, organizerId: req.user.userId });
+    if (!event) {
+      return res.status(404).json({ message: "Event not found" });
+    }
+    res.status(200).json(event);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
   }
 },
    // logout

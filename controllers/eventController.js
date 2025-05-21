@@ -5,6 +5,12 @@ const eventController = {
   getAllEvents: async (req, res) => {
     try {
       const events = await Event.find({ status: 'Approved' });
+      if (!events || events.length === 0) {
+        return res.status(200).json({ 
+          message: "No events available yet",
+          events: []
+        });
+      }
       res.status(200).json(events);
     } catch (error) {
       console.error("Get events error:", error);
@@ -41,7 +47,11 @@ const eventController = {
       }
       const events = await Event.find()
         .select('-__v')
-        .populate('organizerId', 'name email')
+        .populate({
+          path: 'organizerId',
+          select: 'name email',
+          model: 'User'
+        })
         .sort({ createdAt: -1 });
   
       const categorized = {
