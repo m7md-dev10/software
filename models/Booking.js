@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-// Define the Booking schema
 const bookingSchema = new mongoose.Schema({
     userId: {
         type: String,
@@ -33,7 +32,6 @@ const bookingSchema = new mongoose.Schema({
         default: Date.now,
     },
 });
-
 
 const Booking = mongoose.model('Booking', bookingSchema);
 

@@ -69,7 +69,6 @@ const signUpController = {
     res.status(500).json({ message: "Server error" });
   }
 },
-
   // login
 login: async (req, res) => {
   try {
