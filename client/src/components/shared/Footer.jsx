@@ -24,9 +24,9 @@ const Footer = () => {
         <div className="footer-section">
           <h3>Contact Info</h3>
           <ul>
-            <li>Email: contact@eventmanagement.com</li>
-            <li>Phone: (123) 456-7890</li>
-            <li>Address: 123 Event Street, City</li>
+            <li>Email: ghorabam9@gmail.com</li>
+            <li>Phone: +201153382196</li>
+            <li>Address: GIU,Administrative capital, Cairo, Egypt</li>
           </ul>
         </div>
       </div>

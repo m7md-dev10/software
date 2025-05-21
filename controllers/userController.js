@@ -129,8 +129,13 @@ updateUserRole: async (req, res) => {
   getUserBookings: async (req, res) => {
     try {
       const bookings = await Booking.find({ userId: req.user.userId })
-        .populate('eventId', 'title date location');
+        .populate({
+          path: 'eventId',
+          select: 'title date location ticketPrice',
+          model: 'Event'
+        });
       
+      console.log('Populated bookings:', JSON.stringify(bookings, null, 2)); // Debug log
       res.status(200).json(bookings);
     } catch (error) {
       console.error("Get bookings error:", error);
@@ -171,14 +176,8 @@ updateUserRole: async (req, res) => {
 
       const analytics = await Promise.all(
         events.map(async event => {
-          // Get all confirmed bookings for this event
-          const confirmedBookings = await Booking.find({
-            eventId: event._id,
-            status: 'Confirmed'
-          });
-
-          // Calculate total tickets sold by summing numberOfTickets from each booking
-          const ticketsSold = confirmedBookings.reduce((total, booking) => total + booking.numberOfTickets, 0);
+          // Calculate tickets sold based on remaining tickets
+          const ticketsSold = event.totalTickets - event.remainingTickets;
   
           const percentageBooked = Math.round(
             (ticketsSold / event.totalTickets) * 100
@@ -189,29 +188,16 @@ updateUserRole: async (req, res) => {
             title: event.title,
             totalTickets: event.totalTickets,
             ticketsSold,
-            remainingTickets: event.totalTickets - ticketsSold,
+            remainingTickets: event.remainingTickets,
             percentageBooked,
             revenue: ticketsSold * event.ticketPrice
           };
         })
       );
   
-      const graphData = {
-        labels: analytics.map(item => item.title),
-        datasets: [
-          {
-            label: 'Booking Percentage',
-            data: analytics.map(item => item.percentageBooked),
-            backgroundColor: '#4f46e5',
-            borderColor: '#3730a3'
-          }
-        ]
-      };
-  
       res.status(200).json({
         success: true,
-        analytics,
-        graphData
+        analytics
       });
   
     } catch (error) {

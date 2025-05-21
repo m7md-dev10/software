@@ -15,7 +15,7 @@ function Events() {
   return (
     <div className="events-page">
       <div className="events-header">
-        <h1>{isOrganizer ? 'My Events' : 'Available Events'}</h1>
+        <h1>{isOrganizer ? 'Available Events' : 'Available Events'}</h1>
         {isOrganizer && (
           <button 
             className="create-event-button"
