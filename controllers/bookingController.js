@@ -25,7 +25,7 @@ const bookingController = {
         eventId,
         numberOfTickets,
         totalPrice,
-        status: 'Confirmed'
+        bookingStatus: 'Confirmed'
       });
 
       event.remainingTickets -= numberOfTickets;
@@ -56,7 +56,7 @@ const bookingController = {
         return res.status(404).json({ message: "Booking not found" });
       }
 
-      if (booking.status === 'Canceled') {
+      if (booking.bookingStatus === 'Canceled') {
         return res.status(400).json({ message: "Booking already canceled" });
       }
 
@@ -66,16 +66,30 @@ const bookingController = {
         await event.save();
       }
 
-      booking.status = 'Canceled';
-      await booking.save();
+      // Update the booking status using findByIdAndUpdate to ensure atomic operation
+      const updatedBooking = await Booking.findByIdAndUpdate(
+        id,
+        { bookingStatus: 'Canceled' },
+        { new: true, runValidators: true }
+      );
+
+      if (!updatedBooking) {
+        return res.status(404).json({ message: "Failed to update booking" });
+      }
 
       res.status(200).json({
         message: "Booking canceled successfully",
-        updatedBooking: booking
+        updatedBooking
       });
 
     } catch (error) {
       console.error("Cancel booking error:", error);
+      if (error.name === 'ValidationError') {
+        return res.status(400).json({ 
+          message: "Invalid booking status",
+          error: error.message 
+        });
+      }
       res.status(500).json({ message: "Server error" });
     }
   },

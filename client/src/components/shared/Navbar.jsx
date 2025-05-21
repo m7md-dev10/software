@@ -1,82 +1,125 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import './Navbar.css';
 
 const Navbar = () => {
-  const { isAuthenticated, user, logout } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleLogout = async () => {
-    await logout();
-    navigate('/login');
+    try {
+      await logout();
+      navigate('/login');
+    } catch (error) {
+      console.error('Failed to log out:', error);
+    }
+  };
+
+  const isActive = (path) => {
+    return location.pathname === path;
   };
 
   return (
-    <nav className="navbar">
-      <div className="navbar-brand">
-        <Link to="/">Event Management</Link>
-      </div>
+    <nav className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
+      <div className="navbar-container">
+        <Link to="/" className="navbar-brand">
+          <img src="/logo.png" alt="EventHub Logo" />
+          EventHub
+        </Link>
 
-      <ul className="nav-links">
-        <li>
-          <Link to="/events">Events</Link>
-        </li>
-        
-        {isAuthenticated ? (
-          <>
-            {user?.role === 'Organizer' && (
-              <>
-                <li>
-                  <Link to="/my-events">My Events</Link>
-                </li>
-                <li>
-                  <Link to="/create-event">Create Event</Link>
-                </li>
-              </>
-            )}
-            {user?.role === 'Standard User' && (
-              <li>
-                <Link to="/my-bookings">My Bookings</Link>
-              </li>
-            )}
-            {user?.role === 'System Admin' && (
-              <li>
-                <Link to="/admin">Admin Dashboard</Link>
-              </li>
-            )}
-            <li>
-              <Link to="/profile" className="profile-link">
+        <button 
+          className="mobile-menu-button" 
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          aria-label="Toggle menu"
+        >
+          ☰
+        </button>
+
+        <div className={`nav-links ${isMobileMenuOpen ? 'show' : ''}`}>
+          <Link 
+            to="/events" 
+            className={`nav-link ${isActive('/events') ? 'active' : ''}`}
+          >
+            Events
+          </Link>
+          
+          {user && user.role === 'Standard User' && (
+            <Link 
+              to="/my-bookings" 
+              className={`nav-link ${isActive('/my-bookings') ? 'active' : ''}`}
+            >
+              My Bookings
+            </Link>
+          )}
+
+          {user?.role === 'Organizer' && (
+            <Link 
+              to="/my-events" 
+              className={`nav-link ${isActive('/my-events') ? 'active' : ''}`}
+            >
+              My Events
+            </Link>
+          )}
+
+          {user?.role === 'System Admin' && (
+            <Link 
+              to="/admin" 
+              className={`nav-link ${isActive('/admin') ? 'active' : ''}`}
+            >
+              Admin
+            </Link>
+          )}
+
+          {user ? (
+            <div className="user-menu">
+              <button 
+                className="user-button" 
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              >
                 <img 
-                  src={user?.profilePicture || 'https://via.placeholder.com/32'} 
-                  alt="Profile" 
-                  className="profile-picture"
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = 'https://via.placeholder.com/32';
-                  }}
+                  src={user.avatar || '/default-avatar.png'} 
+                  alt="User Avatar" 
+                  className="user-avatar"
                 />
-              </Link>
-            </li>
-            <li>
-              <button onClick={handleLogout} className="logout-button">
-              Logout
-            </button>
-            </li>
-          </>
-        ) : (
-          <>
-            <li>
-              <Link to="/login">Login</Link>
-            </li>
-            <li>
-              <Link to="/register" className="register-button">
-                Register
-              </Link>
-            </li>
-          </>
-        )}
-      </ul>
+                <span>{user.name}</span>
+              </button>
+              
+              <div className={`dropdown-menu ${isDropdownOpen ? 'show' : ''}`}>
+                <Link to="/profile" className="dropdown-item">
+                  <i>👤</i> Profile
+                </Link>
+                {user.role === 'Organizer' && (
+                  <Link to="/create-event" className="dropdown-item">
+                    <i>➕</i> Create Event
+                  </Link>
+                )}
+                <button onClick={handleLogout} className="dropdown-item">
+                  <i>🚪</i> Logout
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="auth-buttons">
+              <Link to="/login" className="login-button">Login</Link>
+              <Link to="/register" className="register-button">Register</Link>
+            </div>
+          )}
+        </div>
+      </div>
     </nav>
   );
 };

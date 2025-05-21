@@ -22,6 +22,7 @@ import UserBookingsPage from './pages/UserBookingsPage';
 import AdminDashboard from './pages/AdminDashboard';
 
 // Styles
+import './index.css';
 import './App.css';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -33,11 +34,11 @@ const AppContent = () => {
   }
 
   return (
-        <div className="App">
-          <Navbar />
-          <main className="main-content">
-            <Routes>
-              {/* Public Routes */}
+    <div className="app">
+      <Navbar />
+      <main className="main-content">
+        <Routes>
+          {/* Public Routes */}
           <Route path="/events" element={<Events />} />
           <Route path="/events/:id" element={<EventDetails />} />
           
@@ -74,17 +75,17 @@ const AppContent = () => {
             } 
           />
 
-              {/* Protected Routes */}
-              <Route
-                path="/profile"
-                element={
-                  <ProtectedRoute>
-                    <ProfilePage />
-                  </ProtectedRoute>
-                }
-              />
+          {/* Protected Routes */}
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
 
-              {/* Organizer Routes */}
+          {/* Organizer Routes */}
           <Route
             path="/my-events"
             element={
@@ -93,9 +94,9 @@ const AppContent = () => {
               </ProtectedRoute>
             }
           />
-              <Route
-                path="/create-event"
-                element={
+          <Route
+            path="/create-event"
+            element={
               <ProtectedRoute allowedRoles={['Organizer']}>
                 <CreateEvent />
               </ProtectedRoute>
@@ -116,9 +117,9 @@ const AppContent = () => {
             element={
               <ProtectedRoute>
                 <UserBookingsPage />
-                  </ProtectedRoute>
-                }
-              />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Redirect root to events */}
           <Route
@@ -132,8 +133,8 @@ const AppContent = () => {
             element={<Navigate to="/events" replace />}
           />
 
-              {/* Admin Routes */}
-              <Route
+          {/* Admin Routes */}
+          <Route
             path="/admin"
             element={
               <ProtectedRoute allowedRoles={['System Admin']}>
@@ -145,15 +146,15 @@ const AppContent = () => {
           {/* Event Analytics Route */}
           <Route
             path="/analytics"
-                element={
+            element={
               <ProtectedRoute allowedRoles={['Organizer']}>
                 <EventAnalytics />
-                  </ProtectedRoute>
-                }
-              />
-            </Routes>
-          </main>
-          <Footer />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </main>
+      <Footer />
       <ToastContainer 
         position="top-right"
         autoClose={5000}
@@ -164,8 +165,9 @@ const AppContent = () => {
         pauseOnFocusLoss
         draggable
         pauseOnHover
+        theme="dark"
       />
-        </div>
+    </div>
   );
 };
 

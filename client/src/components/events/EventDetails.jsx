@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../api/axios';
 import './Events.css';
@@ -85,9 +85,11 @@ const EventDetails = () => {
 
   return (
     <div className="event-details-container">
-      <button onClick={() => navigate('/events')} className="back-button">
-        <i className="fas fa-arrow-left"></i> Back to Events
-      </button>
+      <div className="back-button-container">
+        <Link to="/events" className="back-button">
+          Back to Events
+        </Link>
+      </div>
 
       <div className="event-details-content">
         <div className="event-details-header">

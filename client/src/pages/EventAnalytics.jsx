@@ -111,7 +111,7 @@ const EventAnalytics = () => {
   return (
     <ErrorBoundary>
       <div className="events-page">
-        <h1>Event Analytics</h1>
+        <h1 className="neon-heading">Event Analytics</h1>
         <button 
           onClick={fetchData} 
           className="refresh-button" 
