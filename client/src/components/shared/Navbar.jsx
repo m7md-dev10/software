@@ -91,7 +91,7 @@ const Navbar = () => {
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               >
                 <img 
-                  src={user.avatar || '/default-avatar.png'} 
+                  src={user.profilePicture || '/default-avatar.png'} 
                   alt="User Avatar" 
                   className="user-avatar"
                 />
