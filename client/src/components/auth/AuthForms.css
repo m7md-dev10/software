@@ -2,8 +2,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: calc(100vh - 160px);
-  padding: 2rem;
+  min-height: calc(120vh - 160px);
+  padding: 4rem;
   background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
 }
 
@@ -26,6 +26,7 @@
   font-size: 2.5rem;
   background: linear-gradient(45deg, #4caf50, #81c784);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: slideDown 0.5s ease-out;
 }
